@@ -1,0 +1,41 @@
+Question 1: Knowing docker tags
+docker build --help
+
+Question 2 : Understanding docker first run
+
+winpty docker run -it python3.9 bash
+
+Question 3: Count records
+
+SELECT COUNT(*) FROM green_taxi_trips
+WHERE DATE_TRUNC('day',lpep_pickup_datetime) = '2019-01-15'
+
+Question 4 : Largest trip for each day
+
+SELECT DATE_TRUNC('day',lpep_pickup_datetime),MAX(trip_distance) 
+FROM green_taxi_trips
+GROUP BY 1
+ORDER BY 2 DESC
+
+Question 5 : The number of passengers
+
+SELECT COUNT(*) 
+FROM green_taxi_trips
+WHERE passenger_count = 2 AND DATE_TRUNC('day',lpep_pickup_datetime) = '2019-01-01'
+
+Question 6 : largest tip
+
+With loco_table as 
+	(SELECT "LocationID" id,
+	 "Zone" as region 
+	 FROM zones)
+	
+select gt."DOLocationID" ,loco_table.region, MAX(gt.tip_amount)
+FROM green_taxi_trips gt 
+JOIN loco_table
+ON loco_table.id = gt."DOLocationID"
+WHERE "PULocationID" IN (SELECT "LocationID" 
+						 FROM zones 
+						 WHERE "Zone" LIKE '%Astoria%')
+GROUP BY 1,2
+ORDER BY 3 DESC

@@ -1,0 +1,90 @@
+services:
+  postgres:
+    image : postgres:13
+    environment:
+      - POSTGRES_USER : airflow
+      - POSTGRES_PASSWORD : airflow
+      - POSTGRES_DB : airflow
+    volumes:
+      - ./ny_taxi_postgres_data : /var/lib/postgresql/data
+    healthcheck :
+        test : ["CMD","pg_isready","-U","airflow"]
+        interval : 5s
+        retries : 5
+    restart : always
+    
+# Postgres database
+winpty docker run -it \
+    -e POSTGRES_USER="root" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB="ny_taxi" \
+    -v //c/Users/lenovo/data_engineering_zoomcamp/week_1/2_docker_sql/ny_taxi_postgres_data:/var/lib/postgresql/data \
+    -p 5431:5432 \ 
+     postgres:13
+
+ # winpty docker run -it -e POSTGRES_USER="root" -e POSTGRES_PASSWORD="root" -e POSTGRES_DB="ny_taxi" -v //c/Users/lenovo/data_engineering_zoomcamp/week_1/2_docker_sql/ny_taxi_postgre_data:/var/lib/postgresql/data -p 5431:5432 postgres:13
+
+# https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+# https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf
+
+# pgadmin
+winpty docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+dpage/pgadmin4
+# winpty docker run -it -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" -e PGADMIN_DEFAULT_PASSWORD="root" -p 8080:80 dpage/pgadmin4
+
+
+# Network
+docker network create pg-network
+
+winpty docker run -it \
+    -e POSTGRES_USER="root" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB="ny_taxi" \
+    -v //c/Users/lenovo/data_engineering_zoomcamp/week_1/2_docker_sql/ny_taxi_postgres_data:/var/lib/postgresql/data \
+    -p 5431:5432 \
+    --network=pg-network \
+    --name pg-database \
+    postgres:13
+# winpty docker run -it -e POSTGRES_USER="root" -e POSTGRES_PASSWORD="root" -e POSTGRES_DB="ny_taxi" -v //c/Users/lenovo/data_engineering_zoomcamp/week_1/2_docker_sql/ny_taxi_postgres_data:/var/lib/postgresql/data -p 5431:5432 --network=pg-network --name pg-database postgres:13
+
+winpty docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  --network=pg-network \
+  --name pgadmin \
+dpage/pgadmin4
+
+# winpty docker run -it -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" -e PGADMIN_DEFAULT_PASSWORD="root" -p 8080:80 --network=pg-network --name pgadmin dpage/pgadmin4
+
+#yellow_taxi
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz" \
+winpty python ingest_data.py --user=root --password=root --host=localhost --port=5432 --db=ny_taxi --table_name=yellow_taxi_trips --url=${URL}
+
+#Green_taxi
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-01.csv.gz" \
+winpty python ingest_data.py --user=root --password=root --host=localhost --port=5432 --db=ny_taxi --table_name=green_taxi_trips --url=${URL}
+
+
+## Create Docker image for taxi _data_ingestion
+docker build -t taxi_ingest:v001 .
+
+## Data ingestion to be done locally here
+# start the connection first:
+python -m http.server
+## yellow taxi
+URL='http://172.25.128.1:8000/yellow_tripdata_2021-01.csv'
+ # Here pg-database host is running through docker image created -locally
+winpty docker run -it --network=pg-network taxi_ingest:v001 --user=root --password=root --host=pg-database --port=5432 --db=ny_taxi --table_name=yellow_taxi_trips --url=${URL}
+
+## Green taxi
+URL="http://172.25.128.1:8000/green_tripdata_2019-01.csv"
+winpty docker run -it --network=pg-network taxi_ingest:v001 --user=root --password=root --host=pg-database --port=5432 --db=ny_taxi --table_name=green_taxi_trips --url=${URL}
+
+# with docker compose
+docker-compose up -d
+
+docker-compose down
