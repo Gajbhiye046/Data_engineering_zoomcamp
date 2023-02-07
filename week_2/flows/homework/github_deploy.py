@@ -8,7 +8,7 @@ github_dep = Deployment.build_from_flow(
     flow=etl_web_to_gcs,
     name="github-flow",
     storage=github_block,
-    entrypoint = "week_2/flows/homework/etl_web_to_gcs.py:etl_web_to_gcs"
+    entrypoint = "week_2/flows/homework/etl_web_to_gcs_hw.py:etl_web_to_gcs"
 )
 
 
