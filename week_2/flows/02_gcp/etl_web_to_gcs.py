@@ -43,9 +43,9 @@ def write_gcs(path: Path)-> None :
 @flow()
 def etl_web_to_gcs() -> None:
     """The Main ETL function"""
-    color ="yellow"#"yellow"
-    year = 2019 #2021
-    month = 3 #January
+    color ="green"#"yellow"
+    year = 2020 #2021
+    month = 11 #January
     dataset_file = f"{color}_tripdata_{year}-{month:02}"
     dataset_url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{color}/{dataset_file}.csv.gz"
 
