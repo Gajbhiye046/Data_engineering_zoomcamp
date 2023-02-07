@@ -15,11 +15,11 @@ def fetch(dataset_url:str) -> pd.DataFrame:
 def clean(df : pd.DataFrame)-> pd.DataFrame:
     "Fix the dtype issue"
     ##use this for green taxi:
-    #df["lpep_pickup_datetime"] = pd.to_datetime(df["lpep_pickup_datetime"])
-    #df["lpep_dropoff_datetime"] = pd.to_datetime(df["lpep_dropoff_datetime"])
+    df["lpep_pickup_datetime"] = pd.to_datetime(df["lpep_pickup_datetime"])
+    df["lpep_dropoff_datetime"] = pd.to_datetime(df["lpep_dropoff_datetime"])
     ##use this for yellow taxi:
-    df["tpep_pickup_datetime"] = pd.to_datetime(df["tpep_pickup_datetime"])
-    df["tpep_dropoff_datetime"] = pd.to_datetime(df["tpep_dropoff_datetime"])
+    #df["tpep_pickup_datetime"] = pd.to_datetime(df["tpep_pickup_datetime"])
+    #df["tpep_dropoff_datetime"] = pd.to_datetime(df["tpep_dropoff_datetime"])
     print(df.head(2))
     print(f'columns:{df.dtypes}')
     print(f'rows :{len(df)}')
