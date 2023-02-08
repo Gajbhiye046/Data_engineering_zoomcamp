@@ -28,16 +28,18 @@ def clean(df : pd.DataFrame)-> pd.DataFrame:
 @task 
 def write_local(df: pd.DataFrame,color : str, dataset_file : str) -> Path :
     """ Write DataFrame out locally as parquet file"""
-    path = Path(f"data/{color}/{dataset_file}.parquet").as_posix()
+    path = Path(f"/home/Gajbhiye046/Data_engineering_zoomcamp/data/{color}/{dataset_file}.parquet").as_posix()
+    path_git = Path(f"data/{color}/{dataset_file}.parquet")
     df.to_parquet(path,engine='pyarrow',compression="gzip")
-    return path
+    return path,path_git
 
 @task()
-def write_gcs(path: Path)-> None :
+def write_gcs(path: Path,path_git:Path)-> None :
     "Upload local parquet to GCS"
+    
     gcs_block = GcsBucket.load("zoom-gcs")
     #https://prefecthq.github.io/prefect-gcp/cloud_storage/#prefect_gcp.cloud_storage.GcsBucket.upload_from_path
-    gcs_block.upload_from_path(from_path = path,to_path = path)
+    gcs_block.upload_from_path(from_path = path,to_path = path_git)
     return 
 
 @flow()
@@ -51,8 +53,8 @@ def etl_web_to_gcs() -> None:
 
     df = fetch(dataset_url)
     df_clean = clean(df)
-    path = write_local(df_clean,color,dataset_file)
-    write_gcs(path)
+    path,path_git = write_local(df_clean,color,dataset_file)
+    write_gcs(path,path_git)
 
 if __name__ == "__main__":
     etl_web_to_gcs()
