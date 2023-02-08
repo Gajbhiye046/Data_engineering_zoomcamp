@@ -29,7 +29,7 @@ def clean(df : pd.DataFrame)-> pd.DataFrame:
 def write_local(df: pd.DataFrame,color : str, dataset_file : str) -> Path :
     """ Write DataFrame out locally as parquet file"""
     path = Path(f"C:/Users/Lenovo/data_engineering_zoomcamp/data/{color}/{dataset_file}.parquet").as_posix()
-    path_git = Path(f"data/{color}/{dataset_file}.parquet")
+    path_git = Path(f"data/{color}/{dataset_file}.parquet").as_posix()
     df.to_parquet(path,engine='pyarrow',compression="gzip")
     return path,path_git
 
@@ -43,11 +43,9 @@ def write_gcs(path: Path,path_git:Path)-> None :
     return 
 
 @flow()
-def etl_web_to_gcs() -> None:
+def etl_web_to_gcs(color:str="yellow", year:int=2021, month:int=1) -> None:
     """The Main ETL function"""
-    color ="green"#"yellow"
-    year = 2020 #2021
-    month = 11 #January
+
     dataset_file = f"{color}_tripdata_{year}-{month:02}"
     dataset_url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/{color}/{dataset_file}.csv.gz"
 
@@ -57,4 +55,7 @@ def etl_web_to_gcs() -> None:
     write_gcs(path,path_git)
 
 if __name__ == "__main__":
-    etl_web_to_gcs()
+    color ="green" #"yellow"
+    year = 2020 #2021
+    month = 11  #1
+    etl_web_to_gcs(color,year,month)

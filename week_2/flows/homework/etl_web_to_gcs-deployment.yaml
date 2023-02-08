@@ -1,0 +1,56 @@
+###
+### A complete description of a Prefect Deployment for flow 'etl-web-to-gcs'
+###
+# This yaml was created when building deployment locally for parameterised flow for ques 5 , "Automation with prefect Cloud for pushing notification"
+name: Param ETL cloud
+description: The Main ETL function
+version: 7630bf597fc7c98a5ffb36a165b20e1a
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+work_pool_name: null
+tags: []
+parameters: {"color": "yellow", "year": 2021,"month" :1}
+schedule: null
+is_schedule_active: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: etl-web-to-gcs
+manifest_path: null
+storage: null
+path: C:\Users\Lenovo\data_engineering_zoomcamp
+entrypoint: week_2\flows\homework\etl_web_to_gcs_hw.py:etl_web_to_gcs
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties:
+    color:
+      title: color
+      default: yellow
+      position: 0
+      type: string
+    year:
+      title: year
+      default: 2021
+      position: 1
+      type: integer
+    month:
+      title: month
+      default: 1
+      position: 2
+      type: integer
+  required: null
+  definitions: null
+timestamp: '2023-02-08T13:37:59.783611+00:00'
