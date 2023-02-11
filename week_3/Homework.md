@@ -72,8 +72,8 @@ Question 7:
 
 It is best practice in Big Query to always cluster your data:
 
-- [x] True
-- [ ] False
+- [ ] True
+- [x] False
 
 (Not required) Question 8:
 
