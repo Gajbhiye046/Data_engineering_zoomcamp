@@ -19,4 +19,6 @@ Steps :
 #### Create another request with "POST" tag, inside body tag create raw json with below mentioned {"instances"...} and set  http://localhost:8501/v1/models/tip_model:predict and then click send toget predictions of this instance.
 
 * curl -d '{"instances": [{"passenger_count":1, "trip_distance":12.2, "PULocationID":"193", "DOLocationID":"264", "payment_type":"2","fare_amount":20.4,"tolls_amount":0.0}]}' -X POST http://localhost:8501/v1/models/tip_model:predict
+
+
 ![Screenshot](post_man_api_request.jpg)
