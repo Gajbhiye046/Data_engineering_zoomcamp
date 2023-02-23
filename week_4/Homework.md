@@ -68,7 +68,7 @@ What is the month with the biggest amount of rides after building a tile for the
 
 Create a dashboard with some tiles that you find interesting to explore the data. One tile should show the amount of trips per month, as done in the videos for fact_trips, based on the fact_fhv_trips table.
 
-[ ] March
-[ ] April
-[*] January
-[ ] December
+- [ ] March
+- [ ] April
+- [x] January
+- [ ] December
